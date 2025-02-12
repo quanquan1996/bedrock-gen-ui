@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { SendHorizonal } from 'lucide-react';
 // import { fetchMessages } from '@/services/fetchMessages';
+import { sendMessage } from '@/services/sendMessage';
 
 export default function Home() {
 
@@ -63,11 +64,13 @@ export default function Home() {
   };
 
   const streamingCallback = chunk => {
+    console.log(chunk)
     switch (chunk.role) {
       case 'assistant':
         setIncomingMessage({ role: 'assistant', content: incomingMessage.content += chunk.content })
         break
       case 'tool':
+        console.log(chunk)
         setMessages(prev => [...prev, chunk])
         break
       default:
