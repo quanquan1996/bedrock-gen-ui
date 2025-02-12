@@ -23,10 +23,7 @@ export async function POST(req) {
           tools: tools
         })
         if (message.stop_reason === 'end_turn') {
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({
-            role: "assistant",
-            content: message.content[0].text
-          })}\n\n`))
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ role: "assistant", content: message.content[0].text })}\n\n`))
           break
         } else if (message.stop_reason === 'tool_use') {
           // Append LLM response to output messages list
@@ -36,16 +33,10 @@ export async function POST(req) {
           const result = await toolMap[tool.name](tool.input)
           // Streaming generated UI component to client side if component
           if (result.component) {
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify({
-              role: "tool",
-              content: { component: result.component }
-            })}\n\n`))
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ role: "tool", content: { component: result.component } })}\n\n`))
           }
           // Append tool use result to output messages list
-          outputMessages.push({
-            role: 'user',
-            content: [{ type: 'tool_result', tool_use_id: tool.id, content: result.content }]
-          })
+          outputMessages.push({ role: 'user', content: [{ type: 'tool_result', tool_use_id: tool.id, content: result.content }] })
         }
       }
       controller.close()
