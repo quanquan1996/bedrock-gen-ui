@@ -44,8 +44,9 @@ export const toolMap = {
     console.log(query)
     return {
       component: {
-        name: 'ProductList',
+        name: 'HorizontalScrollArea',
         children: amazonProducts.map(item => ({
+          name: 'ProductCard',
           id: item.asin,
           title: item.product_title,
           price: item.product_price,

@@ -1,8 +1,10 @@
 import AnthropicBedrock from "@anthropic-ai/bedrock-sdk"
 import { toolMap, tools } from "@/services/tools"
+import { HttpsProxyAgent } from 'https-proxy-agent';
 
 const client = new AnthropicBedrock({
-  awsRegion: 'us-west-2'
+  awsRegion: 'us-west-2',
+  httpAgent: process.env.NODE_ENV === 'development' ? new HttpsProxyAgent('http://127.0.0.1:7890') : null,
 })
 
 export async function POST(req) {
@@ -20,7 +22,6 @@ export async function POST(req) {
           messages: [...messages, ...outputMessages],
           tools: tools
         })
-        console.log(message)
         if (message.stop_reason === 'end_turn') {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({
             role: "assistant",
@@ -47,6 +48,7 @@ export async function POST(req) {
           })
         }
       }
+      controller.close()
     }
   })
 

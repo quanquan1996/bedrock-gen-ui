@@ -5,11 +5,14 @@ import { memo } from "react"
 import Email from "./gen-components/Email"
 import CardList from './gen-components/CardList'
 import ProductCard from './gen-components/ProductCard'
+import { HorizontalScrollArea } from './gen-components/HorizontalScrollArea'
+import { Bot } from 'lucide-react'
 
 const componentMap = {
   Email: Email,
   CardList: CardList,
-  ProductCard: ProductCard
+  ProductCard: ProductCard,
+  HorizontalScrollArea: HorizontalScrollArea
 }
 
 function ChatAiMessage(props) {
@@ -28,12 +31,7 @@ function ChatAiMessage(props) {
   return (
     <div className="rounded-2xl py-4 pr-4 flex justify-center items-start gap-4 min-w-0">
       <div className="flex-shrink-0 rounded-full overflow-hidden">
-        <Image
-          src='/godfather.jpg'
-          alt='Godfather Image'
-          width={32}
-          height={32}
-        />
+        <Bot />
       </div>
       {/* <div className="flex-1 text-base whitespace-pre-line"> */}
       <div className="flex-1 min-w-0">

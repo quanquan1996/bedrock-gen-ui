@@ -7,22 +7,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import Image from 'next/image'
 
 export default function ProductCard({ id, image, title, price, description }) {
-  console.log({ id, image, title, price, description })
   return (
-    <Card key={id} className="flex flex-col">
+    <Card key={id} className="flex flex-col w-[200px] shrink-0">
       <CardHeader className="p-4">
-        <AspectRatio ratio={1 / 1}>
-          <Image
+        <div className="w-full aspect-square mb-4 overflow-hidden rounded-md">
+          <img
             src={image}
             alt={title}
-            fill
-            className="rounded-md object-cover"
+            className="w-full h-full object-cover object-center"
           />
-        </AspectRatio>
+        </div>
       </CardHeader>
       <CardContent className="flex-grow p-4 pt-2">
         <CardTitle className="text-sm text-ellipsis whitespace-nowrap overflow-hidden">{title}</CardTitle>
