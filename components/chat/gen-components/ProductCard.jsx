@@ -25,7 +25,7 @@ export default function ProductCard({ id, image, title, price, description }) {
         <CardDescription className="mt-1 text-xs line-clamp-2">{description}</CardDescription>
       </CardContent>
       <CardFooter className="flex justify-between items-center p-4 pt-0">
-        <span className="text-sm font-bold">${price}</span>
+        <span className="text-sm font-bold">{price}</span>
         <Button size="sm">Add</Button>
       </CardFooter>
     </Card>

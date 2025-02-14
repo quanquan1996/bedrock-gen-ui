@@ -1,4 +1,5 @@
 import { amazonProducts } from "./mocks"
+import { generateUI } from "./generateUI"
 
 export const tools = [
   {
@@ -28,8 +29,8 @@ export const tools = [
       },
       required: ["query"]
     }
-  }
-
+  },
+  generateUI
 ]
 
 export const toolMap = {
@@ -37,7 +38,7 @@ export const toolMap = {
     console.log(location)
     return {
       component: {},
-      content: '25 degrees sunny'
+      content: 'Result: 25 degrees sunny, no need to generate ui component'
     }
   },
   searchProducts: async ({ query }) => {
@@ -54,7 +55,7 @@ export const toolMap = {
           description: item.sales_volume + item.delivery
         }))
       },
-      content: `Found ${amazonProducts.length} products, \n${amazonProducts.map(p => p.product_title).join('\n')}`
+      content: `Found ${amazonProducts.length} products, \n${amazonProducts.map(p => p.product_title).join('\n')}, no need to generate ui component`
     }
   }
 }
