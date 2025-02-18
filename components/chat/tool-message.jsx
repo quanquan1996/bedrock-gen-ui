@@ -6,12 +6,14 @@ import CardList from './gen-components/CardList'
 import ProductCard from './gen-components/ProductCard'
 import { HorizontalScrollArea } from './gen-components/HorizontalScrollArea'
 import { Bot } from 'lucide-react'
+import TableComponent from './gen-components/Table'
 
 const componentMap = {
   Email: Email,
   CardList: CardList,
   ProductCard: ProductCard,
-  HorizontalScrollArea: HorizontalScrollArea
+  HorizontalScrollArea: HorizontalScrollArea,
+  Table: TableComponent
 }
 
 function ChatAiMessage(props) {

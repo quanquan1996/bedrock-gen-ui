@@ -67,7 +67,7 @@ export const generateUI = {
       Table: {
         type: 'object',
         properties: {
-          name: { type: 'string', enum: ['table'] },
+          name: { type: 'string', enum: ['Table'] },
           headers: {
             type: 'array',
             items: {
@@ -78,9 +78,13 @@ export const generateUI = {
           rows: {
             type: 'array',
             items: {
-              type: 'string',
-              description: 'Each column value based on headers'
-            }
+              type: 'array',
+              items: {
+                type: 'string',
+                description: 'Each column value based on headers'
+              }
+            },
+            description: 'Each row'
           }
         },
         required: ['name', 'headers', 'rows'],
