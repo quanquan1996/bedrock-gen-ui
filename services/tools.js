@@ -41,6 +41,12 @@ export const toolMap = {
       content: 'Result: 25 degrees sunny, no need to generate ui component'
     }
   },
+  generateUI: async ({ component }) => {
+    return {
+      component: component,
+      content: 'Component has been rendered and streaming back to client side.'
+    }
+  },
   searchProducts: async ({ query }) => {
     console.log(query)
     return {

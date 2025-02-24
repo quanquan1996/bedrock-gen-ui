@@ -7,6 +7,7 @@ const clientConfig = {
   awsRegion: 'us-west-2',
   ...(process.env.HTTP_PROXY && { httpAgent: new HttpsProxyAgent(process.env.HTTP_PROXY) })
 }
+console.log(clientConfig)
 
 const client = new AnthropicBedrock(clientConfig)
 
@@ -29,10 +30,17 @@ async function agent(inputMessages, streaming) {
       // Handle only the first tool use
       const tool = message.content.filter(item => item.type === 'tool_use')[0]
       console.log(tool)
-      if (tool.name === 'generateUI') {
-        streaming(encoder.encode(`data: ${JSON.stringify({ role: "tool", content: tool.input })}\n\n`))
-        break
-      }
+      // {
+      //   type: 'tool_use',
+      //   id: 'toolu_bdrk_01JJBkFPv8qiNK6B6K5vKSbw',
+      //   name: 'generateUI',
+      //   input: { component: { name: 'table', headers: [Array], rows: [Array] } }
+      // }
+      // Tool: If Generated UI component
+      // if (tool.name === 'generateUI') {
+      //   streaming(encoder.encode(`data: ${JSON.stringify({ role: "tool", content: tool.input })}\n\n`))
+      //   break
+      // }
       const result = await toolMap[tool.name](tool.input)
       // Streaming generated UI component to client side if component
       if (result.component) {

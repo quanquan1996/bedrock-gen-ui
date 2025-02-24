@@ -7,7 +7,6 @@ import ChatToolMessage from '@/components/chat/tool-message'
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { SendHorizonal } from 'lucide-react';
-// import { fetchMessages } from '@/services/fetchMessages';
 import { sendMessage } from '@/services/sendMessage';
 
 export default function Home() {
