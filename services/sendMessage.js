@@ -29,11 +29,10 @@ export const sendMessage = async (prompt, callback) => {
         console.log(`event data => ${event.data} cannot be parsed to json, error: ${err}`)
       }
     },
-    onclose() {
-      console.log("Connection closed by the server");
-    },
+    onclose() { },
     onerror(err) {
       console.log("There was an error from server", err);
+      throw (err)
     },
   });
 }
