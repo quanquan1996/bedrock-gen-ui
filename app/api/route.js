@@ -15,8 +15,9 @@ async function agent(inputMessages, streaming) {
   let outputMessages = []
 
   while (true) {
+    //console.log('input:'+ JSON.stringify(outputMessages))
     const message = await client.messages.create({
-      model: 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+      model: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
       max_tokens: 2048,
       messages: [...inputMessages, ...outputMessages],
       tools: tools
@@ -29,7 +30,7 @@ async function agent(inputMessages, streaming) {
       outputMessages.push({ role: 'assistant', content: message.content })
       // Handle only the first tool use
       const tool = message.content.filter(item => item.type === 'tool_use')[0]
-      console.log(tool)
+      console.log(message)
       // {
       //   type: 'tool_use',
       //   id: 'toolu_bdrk_01JJBkFPv8qiNK6B6K5vKSbw',
@@ -41,13 +42,28 @@ async function agent(inputMessages, streaming) {
       //   streaming(encoder.encode(`data: ${JSON.stringify({ role: "tool", content: tool.input })}\n\n`))
       //   break
       // }
-      const result = await toolMap[tool.name](tool.input)
-      // Streaming generated UI component to client side if component
-      if (result.component) {
-        streaming(encoder.encode(`data: ${JSON.stringify({ role: "tool", content: { component: result.component } })}\n\n`))
+      try {
+        const result = await toolMap[tool.name](tool.input);
+        // Append tool use result to output messages list
+        if (result.content !== undefined) {
+          outputMessages.push({
+            role: 'user',
+            content: [{ type: 'tool_result', tool_use_id: tool.id, content: result.content }]
+          });
+        }
+        // Streaming generated UI component to client side if component
+
+        if (result.component) {
+          await streaming(encoder.encode(`data: ${JSON.stringify({ role: "tool", content: { component: result.component } })}\n\n`));
+          await streaming(encoder.encode(`data: \n\n`));
+        }
+
+
+      } catch (error) {
+        console.error(`Error executing tool ${tool.name}:`, error);
+        // 可能需要添加错误处理逻辑，例如添加错误信息到outputMessages
       }
-      // Append tool use result to output messages list
-      outputMessages.push({ role: 'user', content: [{ type: 'tool_result', tool_use_id: tool.id, content: result.content }] })
+      //console.log('input:'+ JSON.stringify(outputMessages))
     }
   }
 }
@@ -63,7 +79,7 @@ export async function POST(req) {
   })
 
   return new Response(customReadable, {
-    header: {
+    headers: {
       Connection: "keep-alive",
       "Content-Encoding": "none",
       "Cache-Control": "no-cache, no-transform",

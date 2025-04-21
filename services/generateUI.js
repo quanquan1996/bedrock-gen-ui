@@ -8,7 +8,7 @@ export const generateUI = {
         anyOf: [
           { $ref: '#/$defs/CardList' },
           { $ref: '#/$defs/Email' },
-          { $ref: '#/$defs/HorizontalScrollArea' },
+          //{ $ref: '#/$defs/HorizontalScrollArea' },
           { $ref: '#/$defs/ProductCard' },
           { $ref: '#/$defs/Table' },
         ]
@@ -21,7 +21,7 @@ export const generateUI = {
         anyOf: [
           { $ref: '#/$defs/CardList' },
           { $ref: '#/$defs/Email' },
-          { $ref: '#/$defs/HorizontalScrollArea' },
+         // { $ref: '#/$defs/HorizontalScrollArea' },
           { $ref: '#/$defs/ProductCard' },
           { $ref: '#/$defs/Table' },
         ]

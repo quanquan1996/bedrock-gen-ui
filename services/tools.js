@@ -18,7 +18,7 @@ export const tools = [
   },
   {
     name: "searchProducts",
-    description: "Search products from amazon based on user's query",
+    description: "Search products from amazon based on user's query,and init product ui list",
     input_schema: {
       type: "object",
       properties: {
@@ -31,7 +31,7 @@ export const tools = [
     }
   },{
     name: "searchFoods",
-    description: "Search foods from foos platform based on user's query",
+    description: "Search foods from foos platform based on user's query,and init food ui list",
     input_schema: {
       type: "object",
       properties: {
@@ -49,12 +49,8 @@ export const tools = [
     input_schema: {
       type: "object",
       properties: {
-        reason: {
-          type: "string",
-          description: "reason for get today's date"
-        }
       },
-      required: ["reason"]
+      required: []
     }
   },
   {
@@ -65,7 +61,7 @@ export const tools = [
       properties: {
         reason: {
           type: "string",
-          description: "reason for get userinfo"
+          description: "reason for get userinfo,This field is for record keeping only and will not affect the results."
         }
       },
       required: ["reason"]
@@ -140,7 +136,7 @@ export const toolMap = {
           description: item.sales_volume + item.delivery
         }))
       },
-      content: `Found ${amazonProducts.length} products, \n${amazonProducts.map(p => p.product_title).join('\n')}, no need to generate ui component`
+      content: `Found ${amazonProducts.length} products,it already init ui, \n${amazonProducts.map(p => p.product_title).join('\n')}, no need to generate ui component,Do not call this tool more than once`
     }
   },
   searchFoods: async ({ query }) => {
@@ -157,7 +153,7 @@ export const toolMap = {
           description: item.sales_volume + item.delivery
         }))
       },
-      content: `Found ${amazonFoods.length} foods, \n${amazonFoods.map(p => p.product_title).join('\n')}, no need to generate ui component`
+      content: `Found ${amazonFoods.length} foods,it already init ui, \n${amazonFoods.map(p => p.product_title).join('\n')}, no need to generate ui component,Do not call this tool more than once`
     }
   },
   getCurrentUserInfo: async ({ reason }) => {
@@ -165,13 +161,13 @@ export const toolMap = {
     return {
       component: {
         name: 'ToolMessage',
-        message: reason+'当前用户信息为: username:Pengjun Qiu,idcard num:123456789,sex:man,phone:123456789,email:pengjunq@amazon.com'
+        message: reason+'当前用户信息为: username:Pengjun Qiu,idcard num:123456789,sex:man,phone:123456789,email:pengjunq@gmail.com'
       },
-      content: 'Result: username:Pengjun Qiu,idcard num:123456789,sex:man,phone:123456789,email:pengjunq@amazon.com, no need to generate ui component,Do not call this tool more than once'
+      content: 'Result: username:Pengjun Qiu,idcard num:123456789,sex:man,phone:123456789,email:pengjunq@gmail.com, no need to generate ui component,Do not call this tool more than once'
     }
   },
-  getToday: async ({ reason }) => {
-    console.log(`Getting today's date. Reason: ${reason}`);
+  getToday: async ({ }) => {
+    console.log(`Getting today's date.`);
 
     // Get current date
     const today = new Date();
@@ -189,7 +185,7 @@ export const toolMap = {
     return {
       component: {
         name:'ToolMessage',
-        message: reason+'今天是: ' + formattedDate
+        message: '今天是: ' + formattedDate
       }, // Empty component as specified
       content: `today is: ${formattedDate}, no need to generate ui component,Do not call this tool more than once`
     };
