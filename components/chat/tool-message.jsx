@@ -4,16 +4,20 @@ import { memo } from "react"
 import Email from "./gen-components/Email"
 import CardList from './gen-components/CardList'
 import ProductCard from './gen-components/ProductCard'
+import HotelBookingForm from "@/components/chat/gen-components/HotelBooking";
 import { HorizontalScrollArea } from './gen-components/HorizontalScrollArea'
 import { Bot } from 'lucide-react'
 import TableComponent from './gen-components/Table'
+import ToolMessage from "@/components/chat/gen-components/ToolMessage";
 
 const componentMap = {
   Email: Email,
   CardList: CardList,
   ProductCard: ProductCard,
   HorizontalScrollArea: HorizontalScrollArea,
-  Table: TableComponent
+  Table: TableComponent,
+  HotelBookingForm: HotelBookingForm,
+  ToolMessage: ToolMessage
 }
 
 function ChatAiMessage(props) {
