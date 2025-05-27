@@ -9,7 +9,8 @@ import { HorizontalScrollArea } from './gen-components/HorizontalScrollArea'
 import { Bot } from 'lucide-react'
 import TableComponent from './gen-components/Table'
 import ToolMessage from "@/components/chat/gen-components/ToolMessage";
-
+import WorkFlowMessage from "@/components/chat/gen-components/WorkFlowMessage";
+import EChartsMessage from "@/components/chat/gen-components/EChartsMessage";
 const componentMap = {
   Email: Email,
   CardList: CardList,
@@ -17,7 +18,9 @@ const componentMap = {
   HorizontalScrollArea: HorizontalScrollArea,
   Table: TableComponent,
   HotelBookingForm: HotelBookingForm,
-  ToolMessage: ToolMessage
+  ToolMessage: ToolMessage,
+  WorkFlowMessage: WorkFlowMessage,
+  EChartsMessage:EChartsMessage
 }
 
 function ChatAiMessage(props) {

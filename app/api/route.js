@@ -18,7 +18,7 @@ async function agent(inputMessages, streaming) {
     //console.log('input:'+ JSON.stringify(outputMessages))
     const message = await client.messages.create({
       model: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
-      max_tokens: 2048,
+      max_tokens: 20480,
       messages: [...inputMessages, ...outputMessages],
       tools: tools
     })
@@ -26,6 +26,8 @@ async function agent(inputMessages, streaming) {
       streaming(encoder.encode(`data: ${JSON.stringify({ role: "assistant", content: message.content[0].text })}\n\n`))
       break
     } else if (message.stop_reason === 'tool_use') {
+      // print first input token
+      console.log('first use token:'+message.usage.input_tokens)
       // Append LLM response to output messages list
       outputMessages.push({ role: 'assistant', content: message.content })
       // Handle only the first tool use
@@ -43,7 +45,7 @@ async function agent(inputMessages, streaming) {
       //   break
       // }
       try {
-        const result = await toolMap[tool.name](tool.input);
+        const result = await toolMap[tool.name](tool.input, streaming);
         // Append tool use result to output messages list
         if (result.content !== undefined) {
           outputMessages.push({
