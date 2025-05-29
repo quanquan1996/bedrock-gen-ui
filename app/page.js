@@ -21,7 +21,9 @@ export default function Home() {
 
   const messageListRef = useRef(null);
   const textAreaRef = useRef(null);
-
+  const handlePrint = () => {
+    window.print();
+  };
   useEffect(() => {
     textAreaRef.current.focus();
   }, [])
@@ -160,7 +162,9 @@ export default function Home() {
               >
                 <SendHorizonal />
               </Button>
-
+              <Button onClick={handlePrint} className="print:hidden">
+                打印聊天记录
+              </Button>
             </div>
             {/* <p className='text-sm text-secondary-foreground/70'>Chatfather will do anything for you!</p> */}
           </div>

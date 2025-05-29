@@ -1,6 +1,6 @@
 export const queryUserShoppingBehaviorData =  {
     "name": "queryUserShoppingBehaviorData",
-    "description": "Execute data queries to retrieve user shopping behavior data.\nPlease give English input.\n\n**Field descriptions:**\n\n* **user_id (STRING):** A unique identifier assigned to each user after sampling and field desensitization. This is not the user's real ID.\n* **item_id (STRING):** A unique identifier assigned to each product after sampling and field desensitization. This is not the product's real ID.\n* **item_category (STRING):** The identifier for the product category, obtained after sampling and field desensitization. This is not the real category ID.\n* **behavior_type (STRING):** The type of user interaction with a product. Possible values are:\n\t* `pv`: View\n\t* `fav`: Favorite\n\t* `cart`: Add to cart\n\t* `buy`: Purchase\n* **behavior_time (STRING):** The timestamp of the user's behavior, represented as a Unix timestamp (e.g., 1511544070).",
+    "description": "Execute data queries to retrieve user shopping behavior data.\nPlease give English input.\n\n**Field descriptions:**\n\n* **user_id (STRING):** A unique identifier assigned to each user after sampling and field desensitization. This is not the user's real ID.\n* **item_id (STRING):** A unique identifier assigned to each product after sampling and field desensitization. This is not the product's real ID.\n* **category_l1 and category_l2 (STRING):** The identifier for the product category.\n* **behavior_type (STRING):** The type of user interaction with a product. Possible values are:\n\t* `pv`: View\n\t* `fav`: Favorite\n\t* `cart`: Add to cart\n\t* `buy`: Purchase\n* **behavior_time (STRING):** The timestamp of the user's behavior, represented as a Unix timestamp (e.g., 1511544070).",
     "input_schema": {
         "type": "object",
         "properties": {
@@ -20,7 +20,7 @@ export const queryUserShoppingBehaviorData =  {
                             "properties": {
                                 "field": {
                                     "type": "string",
-                                    "enum": ["user_id", "item_id", "item_category", "behavior_type",
+                                    "enum": ["user_id", "item_id", "category_l2","category_l1", "behavior_type",
                                         "behavior_time"],
                                     "description": "Field name"
                                 },
@@ -39,7 +39,7 @@ export const queryUserShoppingBehaviorData =  {
                     },
                     "from_data_api": {
                         "type": "string",
-                        "enum": ["testtable.testdb.commerce_shopping"],
+                        "enum": ["commerce_shopping_view"],
                         "description": "Table name to query"
                     },
                     "data_filter_conditions": {
@@ -50,7 +50,7 @@ export const queryUserShoppingBehaviorData =  {
                             "properties": {
                                 "field": {
                                     "type": "string",
-                                    "enum": ["user_id", "item_id", "item_category", "behavior_type",
+                                    "enum": ["user_id", "item_id", "category_l2","category_l1", "behavior_type",
                                         "behavior_time"],
                                     "description": "Condition field"
                                 },
@@ -83,7 +83,7 @@ export const queryUserShoppingBehaviorData =  {
                         "description": "Grouping fields",
                         "items": {
                             "type": "string",
-                            "enum": ["user_id", "item_id", "item_category", "behavior_type", "behavior_time"]
+                            "enum": ["user_id", "item_id", "category_l2","category_l1", "behavior_type", "behavior_time"]
                         }
                     },
                     "having_conditions": {
@@ -94,7 +94,7 @@ export const queryUserShoppingBehaviorData =  {
                             "properties": {
                                 "field": {
                                     "type": "string",
-                                    "enum": ["user_id", "item_id", "item_category", "behavior_type",
+                                    "enum": ["user_id", "item_id", "category_l2","category_l1", "behavior_type",
                                         "behavior_time"],
                                     "description": "Condition field"
                                 },
@@ -129,7 +129,7 @@ export const queryUserShoppingBehaviorData =  {
                             "properties": {
                                 "field": {
                                     "type": "string",
-                                    "enum": ["user_id", "item_id", "item_category", "behavior_type",
+                                    "enum": ["user_id", "item_id", "category_l2","category_l1", "behavior_type",
                                         "behavior_time"],
                                     "description": "Sorting field"
                                 },
@@ -163,7 +163,7 @@ export const queryUserShoppingBehaviorData =  {
                                 },
                                 "table": {
                                     "type": "string",
-                                    "enum": ["commerce_shopping"],
+                                    "enum": ["commerce_shopping_view"],
                                     "description": "Table name to join"
                                 },
                                 "alias": {
@@ -178,7 +178,7 @@ export const queryUserShoppingBehaviorData =  {
                                         "properties": {
                                             "left_field": {
                                                 "type": "string",
-                                                "enum": ["user_id", "item_id", "item_category", "behavior_type",
+                                                "enum": ["user_id", "item_id", "category_l2","category_l1", "behavior_type",
                                                     "behavior_time"],
                                                 "description": "Left table field"
                                             },
@@ -189,7 +189,7 @@ export const queryUserShoppingBehaviorData =  {
                                             },
                                             "right_field": {
                                                 "type": "string",
-                                                "enum": ["user_id", "item_id", "item_category", "behavior_type",
+                                                "enum": ["user_id", "item_id", "category_l2","category_l1", "behavior_type",
                                                     "behavior_time"],
                                                 "description": "Right table field"
                                             },
@@ -213,6 +213,9 @@ export const queryUserShoppingBehaviorData =  {
         "required": ["main_query"]
     }
 }
+const viewMap = new Map ([
+    ['commerce_shopping_view', '(select a.user_id as user_id,b.category_l2 as category_l2,b.category_l1 as category_l1,a.item_id as item_id,a.behavior_type as behavior_type,a.behavior_time as behavior_time from testtable.testdb.commerce_shopping a left join  testtable.testdb.commerce_item_category b on a.item_category = b.category_l3)']
+])
 // 引入 AWS SDK
 const { LambdaClient, InvokeCommand } = require("@aws-sdk/client-lambda");
 
@@ -286,7 +289,7 @@ function jsonToSql(jsonInput) {
         });
 
         // 处理 FROM 部分
-        const fromDataApi = mainQuery.from_data_api || '';
+        const fromDataApi = viewMap.get(mainQuery.from_data_api) || '';
         if (!fromDataApi) {
             return "ERROR: No from_data_api specified";
         }

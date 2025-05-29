@@ -18,7 +18,10 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "echarts": "^5.6.0",
+    "html2pdf": "^0.0.11",
+    "html2pdf.js": "^0.10.3",
     "https-proxy-agent": "^7.0.6",
+    "lodash-es": "^4.17.21",
     "lucide-react": "^0.474.0",
     "next": "^15.1.5",
     "pnpm": "^10.8.1",
@@ -26,6 +29,7 @@
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",
     "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7"
   },

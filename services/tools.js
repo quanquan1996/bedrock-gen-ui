@@ -6,17 +6,133 @@ import {parseJsonAgent} from "./agent/parseJsonAgent";
 
 const encoder = new TextEncoder()
 const echartsSchema = {
-    name: "Echart",
-    description: "Convert data into json format for Echats chart,My display block is 819 wide and 500 high. Please help me adapt my UI and make it as beautiful as possible",
-    input_schema: {
-        type: "object",
-        properties: {
-            option: {
-                type: "object",
-                description: "Echart option json string"
+    "name": "Echart",
+    "description": "Convert data into json format for Echats chart option,You should make sure elements don't overlap.,My display block is 819 wide and 500 high. Please help me adapt my UI and make it as beautiful as possible.For object format data, you need to output valid JSON and not put JSON into a string.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "title": {
+                "type": "object",
+                "properties": {
+                    "text": {
+                        "type": "string",
+                        "description": "The main title text."
+                    },
+                    "subtext": {
+                        "type": "string",
+                        "description": "The subtitle text."
+                    },
+                    "left": {
+                        "type": ["string", "number"],
+                        "description": "Distance of title component from the left side."
+                    },
+                    "top": {
+                        "type": ["string", "number"],
+                        "description": "Distance of title component from the top side."
+                    }
+                },
+                "additionalProperties": true
+            },
+            "tooltip": {
+                "type": "object",
+                "properties": {
+                    "trigger": {
+                        "type": "string",
+                        "enum": ["item", "axis", "none"],
+                        "description": "Type of triggering."
+                    },
+                    "axisPointer": {
+                        "type": "object",
+                        "properties": {
+                            "type": {
+                                "type": "string",
+                                "enum": ["line", "shadow", "none", "cross"],
+                                "description": "Indicator type."
+                            }
+                        },
+                        "additionalProperties": true
+                    }
+                },
+                "additionalProperties": true
+            },
+            "xAxis": {
+                "type": ["object", "array"],
+                "items": { "$ref": "#/definitions/axis" },
+                "$ref": "#/definitions/axis"
+            },
+            "yAxis": {
+                "type": ["object", "array"],
+                "items": { "$ref": "#/definitions/axis" },
+                "$ref": "#/definitions/axis"
+            },
+            "series": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": ["bar", "line", "pie", "scatter" /* ... etc ... */],
+                            "description": "The type of the series."
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "Series name, used for tooltip and legend."
+                        },
+                        "data": {
+                            "type": "array",
+                            "description": "Data array of the series."
+                        }
+                    },
+                    "required": ["type", "data"],
+                    "additionalProperties": true
+                }
+            },
+            "legend": {
+                "type": "object",
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
+                },
+                "additionalProperties": true
+            },
+            "dataset": {
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "type": ["array", "object"]
+                    }
+                },
+                "additionalProperties": true
             }
         },
-        required: ["option"]
+        "definitions": {
+            "axis": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": ["value", "category", "time", "log"],
+                        "description": "Type of axis."
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": ["string", "number", "object"]
+                        },
+                        "description": "Category data."
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Name of axis."
+                    }
+                },
+                "additionalProperties": true
+            }
+        },
+        "additionalProperties": true
     }
 }
 export const tools = [
@@ -265,7 +381,7 @@ export const toolMap = {
             message: {
                 name: "数据可视化",
                 content: query.query_description,
-                data: JSON.parse(echartsData.option.toString())
+                data: echartsData
             }
         }, streaming)
         //成功提示
@@ -281,10 +397,13 @@ export const toolMap = {
             component: {},
             content: `query sql is ${sql}, result is ${result}.\n
             你是一个跨境电商领域的数据洞察专家,你根据接收到的需求，根据已有数据来进行分析\n
-            给出专业的见解和建议\n
+            并给出专业的见解和建议的数据报告\n
             此外如果有什么有价值的探索，请给出探索的建议\n
-            如果当前对话里面的数据不完美或者无法支撑需求，请额外给出建议或者重新调用此工具,但是不要超过三轮调用\n
-            回复的思路为 1.数据见解  2.探索建议 3.数据建议\n`
+            此工具调用不要超过三轮调用\n
+            回复的参考模板如下，请用严格的多级标题保证报告结构思路清晰 \n
+            1.数据见解 :最好包含关键数据的表格，以及对数据的分析见解,分析尽量详细\n
+            2.探索建议 :结合数据见解，拓展思路，给出一些业务或者其他方面的建议与见解\n
+            3.数据建议\n`
         }
     }
 }

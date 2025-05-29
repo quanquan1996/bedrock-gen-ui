@@ -79,3 +79,51 @@
     @apply bg-background text-foreground;
   }
 }
+@media print {
+  /* 隐藏所有非聊天内容区域 */
+  body > *:not(main), /* 隐藏 main 外的所有内容 */
+  main > .flex > .justify-between > .flex-col.justify-center, /* 隐藏输入框区域 */
+  button { /* 隐藏所有按钮 */
+    display: none !important;
+  }
+
+  /* 强制显示所有聊天内容 */
+  main,
+  main > .flex,
+  main > .flex > .justify-between,
+  .scrollbar-hide { /* 针对你的滚动容器 */
+    height: auto !important;
+    overflow: visible !important;
+    position: static !important; /* 确保没有奇怪的定位 */
+  }
+
+  /* 确保聊天容器和父级占满宽度 */
+  .justify-between {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* 重置页面边距和背景 */
+  body, html {
+    margin: 0;
+    padding: 0;
+    background: #fff !important; /* 强制白色背景 */
+  }
+
+  /* 可能需要调整聊天消息的样式以适应打印 */
+  .chat-message { /* 假设你的聊天消息有这个类 */
+    page-break-inside: avoid; /* 尽量避免消息在页面中间断开 */
+    box-shadow: none !important; /* 去掉阴影等 */
+  }
+
+  /* 确保聊天记录从页面顶部开始 */
+  .flex-1.w-full.justify-center.flex.overflow-y-auto.scrollbar-hide {
+    display: block !important;
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+}
