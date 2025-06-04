@@ -238,7 +238,6 @@ export const tools = [
             required: ["username", "idcard", "phone", "email", "hotel_name", "checkin_date", "checkout_date"]
         }
     },
-    generateUI,
     queryUserShoppingBehaviorData,
 ]
 
