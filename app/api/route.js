@@ -1,4 +1,7 @@
-import {BedrockRuntimeClient, InvokeModelCommand} from "@aws-sdk/client-bedrock-runtime";
+import {
+    BedrockRuntimeClient,
+    ConverseCommand,
+} from "@aws-sdk/client-bedrock-runtime";
 import {toolMap, tools} from "@/services/tools"
 import {HttpsProxyAgent} from 'https-proxy-agent';
 
@@ -20,31 +23,24 @@ async function agent(inputMessages, streaming) {
             ...rest,
             content:[{text:content}]
         })), ...outputMessages]))
-        const body = {
-            schemaVersion: "messages-v1",
-            inferenceConfig: {
-                maxTokens: 10240,
-            },
-            messages: [...inputMessages.map(({content, ...rest}) => ({
-                ...rest,
-                content:[{text:content}]
-            })), ...outputMessages],
-            toolConfig: {
-                tools: tools.map(({input_schema, ...rest}) => ({
-                    toolSpec: {
-                        ...rest,
-                        inputSchema: {json: input_schema}
-                    }
-                }))
-            }
+        const messages = [...inputMessages.map(({content, ...rest}) => ({
+            ...rest,
+            content:[{text:content}]
+        })), ...outputMessages]
+        const toolConfig = {
+            tools: tools.map(({input_schema, ...rest}) => ({
+                toolSpec: {
+                    ...rest,
+                    inputSchema: {json: input_schema}
+                }
+            }))
         }
-        var message = await bedrockClient.send(
-            new InvokeModelCommand({
-                body: JSON.stringify(body),
-                modelId: 'us.amazon.nova-lite-v1:0',
-                contentType: 'application/json',
-                accept: 'application/json',
-            })
+        let message = await bedrockClient.send(
+            new ConverseCommand({
+                messages: messages,
+                modelId: 'us.amazon.nova-premier-v1:0',
+                toolConfig: toolConfig
+            }),
         )
         // For text data (like JSON responses)
         const responseText = new TextDecoder().decode(message.body);
@@ -86,7 +82,7 @@ async function agent(inputMessages, streaming) {
                 if (result.content !== undefined) {
                     outputMessages.push({
                         role: 'user',
-                        content: [{toolResult:{ toolUseId: tool.toolUseId, content: [result.content],status: "success"}}]
+                        content: [{toolResult:{ toolUseId: tool.toolUseId, content: [{text:result.content}],status: "success"}}]
                     });
                 }
                 // Streaming generated UI component to client side if component
